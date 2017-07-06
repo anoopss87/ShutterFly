@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 /**
@@ -44,23 +45,34 @@ public class SimpleLTV
 	 * Returns top n customers with highest LTV 
 	 * @param n
 	 * @param data
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
 	 */
-	void topNLTVCustomers(int N, HashMap<String, Customer> data)
+	void topNLTVCustomers(int N, HashMap<String, Customer> data) throws FileNotFoundException, UnsupportedEncodingException
 	{
-		HashMap<String, Double> customerLTVMap = new HashMap<String, Double>();
-		for(String custId : data.keySet())
-		{			
-			Customer custObj = data.get(custId);
-			double customerLTV = computeSimpleLTV(custObj);
-			customerLTVMap.put(custId, customerLTV);
-			//System.out.println(custId + " " + customerLTV);
-		}
-		Map<String, Double> sortedCustLTVMap = sortByValues(customerLTVMap, N);
-		
-		System.out.format("The top %d customer with highest LTV are:\n", N);
-		for(String custId : sortedCustLTVMap.keySet())
+		try
 		{
-			System.out.format("Customer Id : %s	LTV : %f\n", custId, sortedCustLTVMap.get(custId));
+			HashMap<String, Double> customerLTVMap = new HashMap<String, Double>();
+			for(String custId : data.keySet())
+			{			
+				Customer custObj = data.get(custId);
+				double customerLTV = computeSimpleLTV(custObj);
+				customerLTVMap.put(custId, customerLTV);
+				//System.out.println(custId + " " + customerLTV);
+			}
+			Map<String, Double> sortedCustLTVMap = sortByValues(customerLTVMap, N);
+			
+			PrintWriter outFile = new PrintWriter("output/output.txt", "UTF-8");
+			outFile.format("The top %d customer with highest LTV are:\n", N);
+			for(String custId : sortedCustLTVMap.keySet())
+			{
+				outFile.format("Customer Id : %s	LTV : %f\n", custId, sortedCustLTVMap.get(custId));
+			}
+			outFile.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -97,9 +109,6 @@ public class SimpleLTV
 		else
 			siteVisitsPerWeek = (numberOfSiteVisits / (double)duration) * 7.0;
 		
-		//System.out.println(numberOfSiteVisits + " " + duration);
-		//System.out.println(totalOrderAmount + " " + numberOfSiteVisits);
-		//System.out.println(expenditurePerVisit + " " + siteVisitsPerWeek);
 		double avgCustomerValuePerWeek = expenditurePerVisit * siteVisitsPerWeek;
 		customerLTV = 52 * avgCustomerValuePerWeek * customer_lifespan;
 		return customerLTV;

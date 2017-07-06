@@ -12,6 +12,9 @@ public class Event
 	String eventType;
 	String customerId;
 	
+	/**
+	 * Constructor
+	 */
 	Event()
 	{
 		eventData = new HashMap<String, String>();
@@ -88,7 +91,7 @@ public class Event
 	}
 	
 	/**
-	 * Returns hashmap as a string
+	 * Returns hashmap as a string for debugging
 	 * @return
 	 */
 	String getEventAsString()

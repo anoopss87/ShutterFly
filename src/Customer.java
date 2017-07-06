@@ -51,28 +51,35 @@ public class Customer
 	 */
 	void updateSiteVisitTime(String eventTime) throws ParseException
 	{
-		if(eventTime != null)
+		try
 		{
-			String eveTime = eventTime.replace("T", " ").replace("Z", "");
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-			Date curEventTime = simpleDateFormat.parse(eveTime);
-			if (earliestSiteVisitTime == null && latestSiteVisitTime == null)
+			if(eventTime != null)
 			{
-				earliestSiteVisitTime = curEventTime;
-				latestSiteVisitTime = earliestSiteVisitTime;
-			}
-			else
-			{	
-				if (curEventTime.before(earliestSiteVisitTime))
+				String eveTime = eventTime.replace("T", " ").replace("Z", "");
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				Date curEventTime = simpleDateFormat.parse(eveTime);
+				if (earliestSiteVisitTime == null && latestSiteVisitTime == null)
 				{
 					earliestSiteVisitTime = curEventTime;
+					latestSiteVisitTime = earliestSiteVisitTime;
 				}
-				
-				if(curEventTime.after(latestSiteVisitTime))
-				{
-					latestSiteVisitTime = curEventTime;
+				else
+				{	
+					if (curEventTime.before(earliestSiteVisitTime))
+					{
+						earliestSiteVisitTime = curEventTime;
+					}
+					
+					if(curEventTime.after(latestSiteVisitTime))
+					{
+						latestSiteVisitTime = curEventTime;
+					}
 				}
 			}
+		}
+		catch(ParseException e)
+		{
+			System.out.format("Date format error: %s\n", e.getMessage());
 		}
 	}
 	
@@ -116,7 +123,9 @@ public class Customer
 		int dayDiff = (int)timeDiff / (1000 * 3600 * 24);
 		return dayDiff;
 	}
-	
+	/**
+	 * Displays the event list for debugging
+	 */
 	void display()
 	{
 		for(String id : eventMap.keySet())

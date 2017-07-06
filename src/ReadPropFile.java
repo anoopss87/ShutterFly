@@ -58,4 +58,9 @@ public class ReadPropFile
 	{
 		return  prop.getProperty("customer_life_span");		
 	}
+	
+	public String getEventsFileLocation()
+	{
+		return prop.getProperty("events_file_location");
+	}
 }

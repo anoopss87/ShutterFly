@@ -1,1 +1,4 @@
-Your output data will end up here
+The top 3 customer with highest LTV are:
+Customer Id : 93f54c7d8f41	LTV : 74016.800000
+Customer Id : 96f54c7d8f41	LTV : 22016.800000
+Customer Id : 96f55c7d8f41	LTV : 21408.400000
