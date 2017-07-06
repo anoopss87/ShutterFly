@@ -1,46 +1,45 @@
 Design Overview:
 
-Since an event comprises of various key value pairs, an Event class is defined which uses Map data structure to
-store key-value pairs of an event.
+Since an event comprises of various key value pairs, an Event class is defined which uses Map data structure to store key-value pairs of 
+an event.
 
-Since a customer can be associated with various events, a Customer class is defined so that all Customer related
-information will be wrapped in this class. The initial design was to use a list as the data structure to
-storing these events in the Customer class. Since there are mutiple types of events, we need to filter these list
-of events to access a specific event type. This made me to use HashMap data structure where event type is the key
-and Event obkect is the value. 
+Since a customer can be associated with various events, a Customer class is defined so that all Customer related information will be
+wrapped in this class. The initial design was to use a list as the data structure to storing these events in the Customer class. 
+Since there are multiple types of events, we need to filter these list of events to access a specific event type. This made me to use 
+HashMap data structure where event type is the key and Event object is the value. 
 
-So the final in memory data structure to store all events associated to various customers is a Map with customer
-id is the key and Customer object is the value.
+So the final in memory data structure to store all events associated to various customers is a Map with customer id is the key and
+Customer object is the value. The design decision to use Map data structure was made so that the data can be read efficiently and 
+quickly.
 
-The design decision to use Map data structure was made so that the data can be read efficiently and quickly.
+Once the data structures and customer classes are defined, the data ingestion will be done in the following steps:
 
-Once the data structures and customer classes are defined, the data ingestion will de done in the following steps:
 a) Create an Event Object for the new event.
-b) If the event is for new Customer then create a customer object. Otherwise get the customer object from the 
-hashmap using customer_id field of the event.
+b) If the event is for new Customer then create a customer object. Otherwise get the customer object from the hashmap using customer_id
+field of the event.
 c) Add new Event object to the event list of Customer object.
 d) Store customer_id and updated/new customer object in the HashMap.
 
 The computation of LTV from the in-memory data structure i.e. HashMap of customer_id and Customer object is as below:
+
 a) For each customer Id, get the Customer object.
 b) Using Customer object, get all the ORDER events and compute the total order amount.
 c) Using Customer object, compute the total number of site visits.
 d) Customer expenditure per week is defined as total order amount / total site visits.
 e) Compute site visit duration by doing date diff on first site visit and last site visit.
 f) Site visits per week is defined as total site visit / site visit duration.
-g) LTV = 52 * Customer Expenditure per week(d) * Site Visits Per week(f) * 10
+g) LTV = 52 * Customer Expenditure per week (d) * Site Visits Per week (f) * 10
 
 External Library:
 Since the event was in JSON format, simple JSON parser library is used to parse the file consisting of
 various events.
 
-The code uses property file for customer tenure and events file location( relative path from the source directory)
-which can be updated accordingly.
+The code uses property file for customer tenure and events file location (relative path from the source directory) which can be updated
+accordingly.
 
-The Test.java demonstates the usage of this utility bu instantiating EventDataIngestion and SimpleLTV objects
-to ingest the events data from a file and display top N customers with highest LTV.
+The Test.java demonstrates the usage of this utility by instantiating EventDataIngestion and SimpleLTV objects to ingest the events 
+data from a file and display top N customers with highest LTV.
 
 Further Improvements:
-a) The support to include multiple LTV computations can be added so that LTV compuatation method can be selected from
-the property file.
-b) This can also be extended to support Mutlithreading.
+a) The support to include multiple LTV computations can be added so that LTV computation method can be selected from the property file.
+b) This can also be extended to support Multithreading.
